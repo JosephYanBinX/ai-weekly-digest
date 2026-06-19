@@ -67,6 +67,12 @@ export function ArticleExpanded({ article, status, onToggleRead }: ArticleExpand
           ))}
         </div>
       )}
+
+      <div className="content-footer">
+        <a href={article.url} target="_blank" rel="noopener noreferrer">
+          {linkLabel(article)}
+        </a>
+      </div>
     </div>
   )
 }

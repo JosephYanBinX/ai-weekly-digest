@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import type { DigestIssue, IssueSummary } from '../types'
 
 const DATA_BASE = import.meta.env.VITE_DATA_BASE || '/data/issues'
+const LAST_SEEN_KEY = 'ai-digest-last-seen-issue'
 
 export function useDigestData() {
   const [issues, setIssues] = useState<IssueSummary[]>([])
   const [currentIssue, setCurrentIssue] = useState<DigestIssue | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [hasNewIssue, setHasNewIssue] = useState(false)
 
   useEffect(() => {
     fetch(`${DATA_BASE}/index.json`)
@@ -15,7 +17,12 @@ export function useDigestData() {
       .then((data: IssueSummary[]) => {
         setIssues(data)
         if (data.length > 0) {
-          loadIssue(data[data.length - 1].id)
+          const latest = data[data.length - 1]
+          const lastSeen = localStorage.getItem(LAST_SEEN_KEY)
+          if (lastSeen && latest.issueNumber > Number(lastSeen)) {
+            setHasNewIssue(true)
+          }
+          loadIssue(latest.id)
         } else {
           setLoading(false)
         }
@@ -38,12 +45,20 @@ export function useDigestData() {
         setCurrentIssue(data)
         setLoading(false)
         window.scrollTo({ top: 0, behavior: 'smooth' })
+
+        const latestNum = issues.length > 0
+          ? issues[issues.length - 1].issueNumber
+          : data.issueNumber
+        if (data.issueNumber >= latestNum) {
+          localStorage.setItem(LAST_SEEN_KEY, String(data.issueNumber))
+          setHasNewIssue(false)
+        }
       })
       .catch(err => {
         setError(err.message)
         setLoading(false)
       })
-  }, [])
+  }, [issues])
 
   const currentIndex = currentIssue
     ? issues.findIndex(i => i.id === currentIssue.id)
@@ -68,6 +83,7 @@ export function useDigestData() {
     loadIssue,
     hasPrev,
     hasNext,
+    hasNewIssue,
     goToPrev,
     goToNext,
   }

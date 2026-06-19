@@ -101,6 +101,17 @@ body {
   color: var(--text);
   min-width: 24px;
   text-align: center;
+  position: relative;
+}
+
+.new-dot {
+  position: absolute;
+  top: -3px;
+  right: -6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e54040;
 }
 
 .feed {

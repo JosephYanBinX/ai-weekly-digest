@@ -10,6 +10,7 @@ export function App() {
     error,
     hasPrev,
     hasNext,
+    hasNewIssue,
     goToPrev,
     goToNext,
   } = useDigestData()
@@ -43,6 +44,7 @@ export function App() {
         totalCount={currentIssue.articles.length}
         hasPrev={hasPrev}
         hasNext={hasNext}
+        hasNewIssue={hasNewIssue}
         onPrev={goToPrev}
         onNext={goToNext}
       />

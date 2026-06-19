@@ -252,6 +252,23 @@
   color: var(--text-3);
 }
 
+.content-footer {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.content-footer a {
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.content-footer a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 600px) {
   .content-inner { padding-left: 16px; }
   .data-inline { flex-direction: column; }

@@ -5,6 +5,7 @@ interface HeaderProps {
   totalCount: number
   hasPrev: boolean
   hasNext: boolean
+  hasNewIssue: boolean
   onPrev: () => void
   onNext: () => void
 }
@@ -23,6 +24,7 @@ export function Header({
   totalCount,
   hasPrev,
   hasNext,
+  hasNewIssue,
   onPrev,
   onNext,
 }: HeaderProps) {
@@ -39,7 +41,10 @@ export function Header({
           </div>
           <div className="issue-nav">
             <button disabled={!hasPrev} onClick={onPrev}>←</button>
-            <span className="issue-num">#{issueNumber}</span>
+            <span className="issue-num">
+              #{issueNumber}
+              {hasNewIssue && <span className="new-dot" />}
+            </span>
             <button disabled={!hasNext} onClick={onNext}>→</button>
           </div>
         </div>
