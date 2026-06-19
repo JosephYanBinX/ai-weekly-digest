@@ -1,0 +1,29 @@
+[
+  {
+    "id": "260608",
+    "issueNumber": 0,
+    "dateRange": [
+      "2026-06-02",
+      "2026-06-08"
+    ],
+    "articleCount": 5
+  },
+  {
+    "id": "260616",
+    "issueNumber": 1,
+    "dateRange": [
+      "2026-06-09",
+      "2026-06-16"
+    ],
+    "articleCount": 7
+  },
+  {
+    "id": "260619",
+    "issueNumber": 2,
+    "dateRange": [
+      "2026-06-16",
+      "2026-06-19"
+    ],
+    "articleCount": 3
+  }
+]
