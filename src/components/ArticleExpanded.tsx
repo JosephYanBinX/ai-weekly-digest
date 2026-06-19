@@ -1,5 +1,4 @@
 import type { Article, ReadingStatus } from '../types'
-import { estimateReadingTime } from '../utils'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkCjkFriendly from 'remark-cjk-friendly'
@@ -21,10 +20,9 @@ function sourceInfo(article: Article): string {
     return `收听播客 · ${article.duration}`
   }
 
-  const readingTime = estimateReadingTime(article.content)
   if (url.includes('youtube.com')) return `观看视频 · YouTube`
   if (url.includes('bilibili.com')) return `观看视频 · B站`
-  return `阅读原文 · 约 ${readingTime} 分钟`
+  return `阅读原文 →`
 }
 
 export function ArticleExpanded({ article, status, onToggleRead, onCollapse }: ArticleExpandedProps) {

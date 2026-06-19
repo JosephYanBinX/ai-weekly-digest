@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react'
 import '../styles/article.css'
 import type { Article, ReadingStatus } from '../types'
-import { estimateReadingTime } from '../utils'
 import { ArticleExpanded } from './ArticleExpanded'
 
 interface ArticleItemProps {
@@ -36,16 +35,21 @@ export function ArticleItem({ article, status, onExpand, onToggleRead }: Article
       setMounted(true)
       onExpand()
     } else {
-      itemRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      setTimeout(() => {
+        const el = itemRef.current
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 80
+          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
+        }
+      }, 400)
     }
   }
 
   const sourceLabel = SOURCE_LABELS[article.source] || article.source
-  const readingTime = estimateReadingTime(article.content)
 
   const sourceLine = article.type === 'podcast'
     ? <><span className="feed-type">播客</span><span className="source-name">{sourceLabel}</span> · {article.duration} · {formatDate(article.date)}</>
-    : <><span className="source-name">{sourceLabel}</span> · {article.author} · {formatDate(article.date)} · <span className="feed-reading-time">约 {readingTime} 分钟</span></>
+    : <><span className="source-name">{sourceLabel}</span> · {article.author} · {formatDate(article.date)}</>
 
   return (
     <div
