@@ -1,6 +1,7 @@
 interface HeaderProps {
   dateRange: [string, string]
   issueNumber: number
+  totalIssues: number
   unreadCount: number
   totalCount: number
   hasPrev: boolean
@@ -20,6 +21,7 @@ function formatDateRange(range: [string, string]): string {
 export function Header({
   dateRange,
   issueNumber,
+  totalIssues,
   unreadCount,
   totalCount,
   hasPrev,
@@ -40,12 +42,12 @@ export function Header({
             <span>{unreadCount}</span> 未读 / {totalCount} 篇
           </div>
           <div className="issue-nav">
-            <button disabled={!hasPrev} onClick={onPrev}>←</button>
+            <button disabled={!hasPrev} onClick={onPrev} title={hasPrev ? `上一期` : undefined}>←</button>
             <span className="issue-num">
-              #{issueNumber}
+              #{issueNumber}/{totalIssues}
               {hasNewIssue && <span className="new-dot" />}
             </span>
-            <button disabled={!hasNext} onClick={onNext}>→</button>
+            <button disabled={!hasNext} onClick={onNext} title={hasNext ? `下一期` : undefined}>→</button>
           </div>
         </div>
       </div>

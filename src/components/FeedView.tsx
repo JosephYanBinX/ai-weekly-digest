@@ -6,9 +6,10 @@ import { ArticleItem } from './ArticleItem'
 interface FeedViewProps {
   articles: Article[]
   readingState: ReturnType<typeof useReadingState>
+  unreadCount: number
 }
 
-export function FeedView({ articles, readingState }: FeedViewProps) {
+export function FeedView({ articles, readingState, unreadCount }: FeedViewProps) {
   return (
     <main className="feed">
       {articles.map(article => (
@@ -20,6 +21,9 @@ export function FeedView({ articles, readingState }: FeedViewProps) {
           onToggleRead={() => readingState.toggleRead(article.id)}
         />
       ))}
+      {unreadCount === 0 && articles.length > 0 && (
+        <div className="all-read-hint">本期已读完</div>
+      )}
     </main>
   )
 }

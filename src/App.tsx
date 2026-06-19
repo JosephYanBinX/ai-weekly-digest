@@ -5,6 +5,7 @@ import { FeedView } from './components/FeedView'
 
 export function App() {
   const {
+    issues,
     currentIssue,
     loading,
     error,
@@ -40,6 +41,7 @@ export function App() {
       <Header
         dateRange={currentIssue.dateRange}
         issueNumber={currentIssue.issueNumber}
+        totalIssues={issues.length}
         unreadCount={unreadCount}
         totalCount={currentIssue.articles.length}
         hasPrev={hasPrev}
@@ -51,6 +53,7 @@ export function App() {
       <FeedView
         articles={currentIssue.articles}
         readingState={readingState}
+        unreadCount={unreadCount}
       />
       <div className="footer">
         AI 周报 #{currentIssue.issueNumber} · {currentIssue.generatedAt} 生成

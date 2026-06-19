@@ -1,4 +1,5 @@
 import type { Article, ReadingStatus } from '../types'
+import { estimateReadingTime } from '../utils'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkCjkFriendly from 'remark-cjk-friendly'
@@ -7,21 +8,31 @@ interface ArticleExpandedProps {
   article: Article
   status: ReadingStatus
   onToggleRead: () => void
+  onCollapse: () => void
 }
 
-function linkLabel(article: Article): string {
-  if (article.url.includes('youtube.com')) return 'YouTube →'
-  if (article.url.includes('bilibili.com')) return 'B站 →'
-  if (article.url.includes('xiaoyuzhoufm.com')) return '小宇宙 →'
-  return '阅读原文 →'
+function sourceInfo(article: Article): string {
+  const url = article.url
+
+  if (article.type === 'podcast' || article.duration) {
+    if (url.includes('xiaoyuzhoufm.com')) return `收听播客 · 小宇宙 · ${article.duration}`
+    if (url.includes('youtube.com')) return `观看访谈 · YouTube · ${article.duration}`
+    if (url.includes('bilibili.com')) return `观看访谈 · B站 · ${article.duration}`
+    return `收听播客 · ${article.duration}`
+  }
+
+  const readingTime = estimateReadingTime(article.content)
+  if (url.includes('youtube.com')) return `观看视频 · YouTube`
+  if (url.includes('bilibili.com')) return `观看视频 · B站`
+  return `阅读原文 · 约 ${readingTime} 分钟`
 }
 
-export function ArticleExpanded({ article, status, onToggleRead }: ArticleExpandedProps) {
+export function ArticleExpanded({ article, status, onToggleRead, onCollapse }: ArticleExpandedProps) {
   return (
     <div className="content-inner">
       <div className="content-toolbar">
         <a href={article.url} target="_blank" rel="noopener noreferrer">
-          {linkLabel(article)}
+          {sourceInfo(article)}
         </a>
         <button className="mark-read-btn" onClick={e => { e.stopPropagation(); onToggleRead() }}>
           {status === 'read' ? '标记未读' : '标记已读'}
@@ -71,9 +82,13 @@ export function ArticleExpanded({ article, status, onToggleRead }: ArticleExpand
 
       <div className="content-footer">
         <a href={article.url} target="_blank" rel="noopener noreferrer">
-          {linkLabel(article)}
+          {sourceInfo(article)}
         </a>
       </div>
+
+      <button className="collapse-btn" onClick={e => { e.stopPropagation(); onCollapse() }}>
+        收起 ↑
+      </button>
     </div>
   )
 }

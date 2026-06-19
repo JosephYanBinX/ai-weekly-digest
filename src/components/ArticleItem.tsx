@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import '../styles/article.css'
 import type { Article, ReadingStatus } from '../types'
+import { estimateReadingTime } from '../utils'
 import { ArticleExpanded } from './ArticleExpanded'
 
 interface ArticleItemProps {
@@ -26,6 +27,7 @@ function formatDate(date: string): string {
 export function ArticleItem({ article, status, onExpand, onToggleRead }: ArticleItemProps) {
   const [expanded, setExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const itemRef = useRef<HTMLDivElement>(null)
 
   function toggle() {
     const willExpand = !expanded
@@ -33,17 +35,21 @@ export function ArticleItem({ article, status, onExpand, onToggleRead }: Article
     if (willExpand) {
       setMounted(true)
       onExpand()
+    } else {
+      itemRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }
 
   const sourceLabel = SOURCE_LABELS[article.source] || article.source
+  const readingTime = estimateReadingTime(article.content)
 
   const sourceLine = article.type === 'podcast'
     ? <><span className="feed-type">播客</span><span className="source-name">{sourceLabel}</span> · {article.duration} · {formatDate(article.date)}</>
-    : <><span className="source-name">{sourceLabel}</span> · {article.author} · {formatDate(article.date)}</>
+    : <><span className="source-name">{sourceLabel}</span> · {article.author} · {formatDate(article.date)} · <span className="feed-reading-time">约 {readingTime} 分钟</span></>
 
   return (
     <div
+      ref={itemRef}
       className={`feed-item${expanded ? ' expanded' : ''}`}
       data-status={status}
     >
@@ -63,6 +69,7 @@ export function ArticleItem({ article, status, onExpand, onToggleRead }: Article
               article={article}
               status={status}
               onToggleRead={onToggleRead}
+              onCollapse={toggle}
             />
           )}
         </div>
