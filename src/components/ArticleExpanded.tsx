@@ -1,5 +1,6 @@
 import type { Article, ReadingStatus } from '../types'
 import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface ArticleExpandedProps {
   article: Article
@@ -27,6 +28,7 @@ export function ArticleExpanded({ article, status, onToggleRead }: ArticleExpand
       </div>
 
       <Markdown
+        remarkPlugins={[remarkGfm]}
         components={{
           a: ({ href, children }) => (
             <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
