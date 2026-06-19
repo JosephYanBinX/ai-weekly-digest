@@ -1,11 +1,13 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import '../styles/article.css'
 import type { Article, ReadingStatus } from '../types'
 import { ArticleExpanded } from './ArticleExpanded'
 
 interface ArticleItemProps {
   article: Article
+  expanded: boolean
   status: ReadingStatus
+  onToggle: () => void
   onExpand: () => void
   onToggleRead: () => void
 }
@@ -23,25 +25,35 @@ function formatDate(date: string): string {
   return `${parts[1]}.${parts[2]}`
 }
 
-export function ArticleItem({ article, status, onExpand, onToggleRead }: ArticleItemProps) {
-  const [expanded, setExpanded] = useState(false)
+export function ArticleItem({ article, expanded, status, onToggle, onExpand, onToggleRead }: ArticleItemProps) {
   const [mounted, setMounted] = useState(false)
   const itemRef = useRef<HTMLDivElement>(null)
+  const onExpandRef = useRef(onExpand)
+  onExpandRef.current = onExpand
 
-  function toggle() {
-    const willExpand = !expanded
-    setExpanded(willExpand)
-    if (willExpand) {
+  useEffect(() => {
+    if (expanded) {
       setMounted(true)
-      onExpand()
+      onExpandRef.current()
+    }
+  }, [expanded])
+
+  function collapse() {
+    onToggle()
+    setTimeout(() => {
+      const el = itemRef.current
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 80
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
+      }
+    }, 400)
+  }
+
+  function handleHeaderClick() {
+    if (expanded) {
+      collapse()
     } else {
-      setTimeout(() => {
-        const el = itemRef.current
-        if (el) {
-          const y = el.getBoundingClientRect().top + window.scrollY - 80
-          window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
-        }
-      }, 400)
+      onToggle()
     }
   }
 
@@ -57,7 +69,7 @@ export function ArticleItem({ article, status, onExpand, onToggleRead }: Article
       className={`feed-item${expanded ? ' expanded' : ''}`}
       data-status={status}
     >
-      <div className="feed-header" onClick={toggle}>
+      <div className="feed-header" onClick={handleHeaderClick}>
         <div className={`reading-dot ${status}`} />
         <div className="feed-meta">
           <div className="feed-title">{article.title}</div>
@@ -73,7 +85,7 @@ export function ArticleItem({ article, status, onExpand, onToggleRead }: Article
               article={article}
               status={status}
               onToggleRead={onToggleRead}
-              onCollapse={toggle}
+              onCollapse={collapse}
             />
           )}
         </div>

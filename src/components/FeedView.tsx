@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import '../styles/feed.css'
 import type { Article } from '../types'
 import type { useReadingState } from '../hooks/useReadingState'
@@ -10,13 +11,17 @@ interface FeedViewProps {
 }
 
 export function FeedView({ articles, readingState, unreadCount }: FeedViewProps) {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
   return (
     <main className="feed">
       {articles.map(article => (
         <ArticleItem
           key={article.id}
           article={article}
+          expanded={expandedId === article.id}
           status={readingState.getStatus(article.id)}
+          onToggle={() => setExpandedId(prev => prev === article.id ? null : article.id)}
           onExpand={() => readingState.markReading(article.id)}
           onToggleRead={() => readingState.toggleRead(article.id)}
         />

@@ -92,10 +92,6 @@
   color: #c55200;
 }
 
-.feed-reading-time {
-  color: var(--text-3);
-}
-
 .toggle-indicator {
   flex-shrink: 0;
   font-size: 12px;
