@@ -17,11 +17,18 @@ export function App() {
   const readingState = useReadingState()
 
   if (error) {
-    return <div className="error">{error}</div>
+    return (
+      <div className="error">
+        <p>{error}</p>
+        <button className="retry-btn" onClick={() => window.location.reload()}>
+          重新加载
+        </button>
+      </div>
+    )
   }
 
   if (loading || !currentIssue) {
-    return <div className="loading">Loading...</div>
+    return <div className="loading">加载中...</div>
   }
 
   const articleIds = currentIssue.articles.map(a => a.id)
